@@ -21,6 +21,7 @@ def suma2020(lista):
     lista.sort()
 
     # Luego tomamos el elemento menor de la lista y vemos si la suma es menor
+    B
     # que el valor objetivo (2020) entonces eliminamos este elemento y seguimos
     for x in lista:
         if x + lista[-1] < 2020:
@@ -51,8 +52,16 @@ def suma2020(lista):
 
 import itertools as it
 def suma2020iter(lista):
-    for a, b in it.combinations(lista, 2):
-        if a + b == 2020:
-            return a * b
+    for a, b, c in it.combinations(lista, 3):
+        if a + b + c== 2020:
+            return a * b * c
 
+def main():
+    lista = open(r'C:\Users\sgonzalezg\Documents\advent-of-code-2020\additional\input_d1.txt', 'r')
+    lista = list(lista)
+    L1 = [int(x.rstrip("\n")) for x in lista]
 
+    print("El proucto de los tres números que suman 2020 es: {}".format(suma2020iter(L1)))
+
+if __name__ == "__main__":
+    main()

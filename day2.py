@@ -7,9 +7,7 @@ Desafío consta de determinar de una lista de passwords cuales no cumplen con su
 protocolo.
 '''
 
-# Definimos la función que toma 1 linea, lee las reglas de su protocolo y
-# determina si el password cumple con ellas.
-
+# Función inicial que obtiene los distintos parametros a partir de la linea protocolo:password
 def password_split(line):
     # Primero se separa el password del protocolo
     # Se separa por medio del espacio
@@ -27,6 +25,8 @@ def password_split(line):
 
     return min_caracter, max_caracter, caracter, passwd
 
+# Función que toma una linea y verifica si el password cumple con las reglas del
+# protocolo numérico
 def number_char_validation(line):
     # Se obtienen los distintos elementos
     min_char, max_char, char, passwd = password_split(line)
@@ -39,6 +39,8 @@ def number_char_validation(line):
     else:
         return True
 
+# funciòn que toma una linea y verifica si el password cumple con las reglas del
+# protocolo de posición
 def position_char_validation(line):
     # Se obtienen los distintos elementos
     min_char, max_char, char, passwd = password_split(line)
