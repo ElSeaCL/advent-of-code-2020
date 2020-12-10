@@ -9,6 +9,13 @@ A partir de un registro de passportes, identificar cuantos son incorrectos por
 no contar con toda la información necesaria.
 '''
 
+def line_to_dict(line):
+    line = line.rstrip(' ').lstrip(' ').split()
+    line = [x.split(':') for x in line]
+    line = {x[0]:x[1] for x in line}
+
+    return line
+
 def passport_format(file):
     '''
     Como parámetro toma un listado de pasaportes y formatea la información
@@ -39,10 +46,7 @@ def passport_format(file):
         if line == ' ':
             # Si no topamos con una linea en blanco se agrega el pasaporte 
             # a la lista principal y se reinicia la variable
-            passport_line = passport_line.rstrip(' ').lstrip(' ')
-            passport_line = passport_line.split()
-            passport_line = [x.split(':') for x in passport_line]
-            passport_line = {x[0]:x[1] for x in passport_line}
+            passport_line = line_to_dict(passport_line)
             passport_list.append(passport_line)
             passport_line = ""
         
@@ -50,6 +54,11 @@ def passport_format(file):
 
         # Leemos la siguiente linea para repetir el ciclo
         line = file.readline()
+
+    # Ya que usamos '\n' para definir el cierre de datos para el pasaporte, pasa que el último lo
+    # terminamos descartando. Se agregan estas dos últimas lineas para evitar esto.
+    passport_line = line_to_dict(passport_line)
+    passport_list.append(passport_line)
 
     return passport_list
 
