@@ -18,11 +18,60 @@ def passport_format(file):
     param: text file
     return: list de diccionario donde cada diccionario es un passport
     '''
+    '''
+    Se ve horrible...lo sé, seguramente hay una forma más elegante y eficiente
+    de pasar estos datos en forma de diccionario. Aun así esta función logra
+    su cometido, así que la dejaré tranquilita por ahora
+    '''
+
+    # Iniciamos la lista que va a contener los pasaportes formateados
+    passport_list = []
     
+    # Iniciamos una lista que contendra los pasaportes individuales
+    passport_line = ""
+
+    # Se lee la primera linea
+    line = file.readline()
+
+    while line:
+        line = line.rstrip('\n')
+        line = line + ' '
+        if line == ' ':
+            # Si no topamos con una linea en blanco se agrega el pasaporte 
+            # a la lista principal y se reinicia la variable
+            passport_line = passport_line.rstrip(' ').lstrip(' ')
+            passport_line = passport_line.split()
+            passport_line = [x.split(':') for x in passport_line]
+            passport_line = {x[0]:x[1] for x in passport_line}
+            passport_list.append(passport_line)
+            passport_line = ""
+        
+        passport_line = passport_line + line
+
+        # Leemos la siguiente linea para repetir el ciclo
+        line = file.readline()
+
     return passport_list
 
 
-def is_valid_passport():
+def is_valid_passport(passport):
+    '''
+    Toma como argumento un pasaporte en formato valido (diccionario field:value)
+    y devuelve si contiene los campos requeridos o no.
+    '''
+    required_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+    passport_keys = list(passport.keys())
+    
+    # Se comparan ambas, si tienen los mismos campos entonces el pasaporte es valido
+    required_fields.sort()
+    passport_keys.sort()
+
+    try:
+        passport_keys.remove('cid')
+    except:
+        pass
+
+    is_valid = (required_fields == passport_keys)
 
     return is_valid
 
