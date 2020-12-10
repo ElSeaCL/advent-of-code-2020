@@ -74,7 +74,7 @@ def is_valid_passport(passport):
     # Se comparan ambas, si tienen los mismos campos entonces el pasaporte es valido
     required_fields.sort()
     passport_keys.sort()
-
+    
     try:
         passport_keys.remove('cid')
     except:
@@ -83,6 +83,26 @@ def is_valid_passport(passport):
     is_valid = (required_fields == passport_keys)
 
     return is_valid
+
+def is_valid_value(passport):
+    '''
+    En este caso creo que es conveniente definir las funciones de comparación y luego
+    llamarlas mediante un switch-case. De este modo no repito tanto código.
+
+    En caso de que uno de los requerimiento no se cumpla se rompe el loop y se devuelve
+    inmediatamente un False.
+    '''
+
+    def year_value(year1, year2):
+        
+        return True
+
+    def number_digit(num):
+
+        return True
+
+    def 
+
 
 def main():
     # Iniciamos cargando el archivo
