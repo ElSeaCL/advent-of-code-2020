@@ -93,15 +93,78 @@ def is_valid_value(passport):
     inmediatamente un False.
     '''
 
-    def year_value(year1, year2):
+    def year_value(year_passport, year1, year2):
+        try:
+            year1 = int(year1)
+            year2 = int(year2)
+        except:
+            return False
+
+        if (year_passport >= year1) and (year_passport <= year2):
+            return True
+        else:
+            return False
+
+    def height_value(height):
+        unit = height[-2:]
+        valor = height[:-2]
         
+        try:
+            valor = int(valor)
+        except:
+            return False
+
+        if unit == 'cm':
+            required = [150, 193]
+        elif unit == 'in':
+            required = [59, 76]
+        else:
+            return False
+
+        if valor >= required[0] and valor <= required[1]:
+            return True
+        else:
+            return False
+
+    def hair_value(hair_color):
+        values = '0123456789abcdef'
+
+        if hair_color[0] != '#':
+            return False
+        
+        hair_color = hair_color[1:]
+
+        for char in hair_color:
+            if char not in values:
+                return False
+
         return True
 
-    def number_digit(num):
+    def eye_value(eye_color):
+        values = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
 
+        if eye_color in values:
+            return True
+        else:
+            return False
+        
+    def id_value(passport_id):
+        return passport_id.isnumeric()
+    
+    def cid_value(country_id):
         return True
 
-    def 
+   # Definimos el diccionario con los casos
+   dict = {
+        'byr' : [year_value, 1920, 2002],
+        'iyr' : [year_value, 2010, 2020],
+        'eyr' : [year_value, 2020, 2030],
+        'hgt' : [height_value],
+        'hcl' : [hair_value],
+        'ecl' : [eye_value],
+        'pid' : [id_value],
+        'cid' : [cid_value]
+        }
 
 
 def main():
