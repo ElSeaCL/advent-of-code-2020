@@ -92,11 +92,13 @@ def is_valid_value(passport):
     En caso de que uno de los requerimiento no se cumpla se rompe el loop y se devuelve
     inmediatamente un False.
     '''
+    # Comenzamos definiendo las distintas funciones que realizaran el chequeo
+    # Estas contienen las reglas a verificar.
 
+    # Verificación de atributos por año
     def year_value(year_passport, year1, year2):
         try:
-            year1 = int(year1)
-            year2 = int(year2)
+            year_passport = int(year_passport)
         except:
             return False
 
@@ -105,7 +107,8 @@ def is_valid_value(passport):
         else:
             return False
 
-    def height_value(height):
+    # Verificación por altura
+    def height_value(height, *unused):
         unit = height[-2:]
         valor = height[:-2]
         
@@ -126,7 +129,8 @@ def is_valid_value(passport):
         else:
             return False
 
-    def hair_value(hair_color):
+    # Verificación de color de pelo
+    def hair_value(hair_color, *unused):
         values = '0123456789abcdef'
 
         if hair_color[0] != '#':
@@ -140,7 +144,8 @@ def is_valid_value(passport):
 
         return True
 
-    def eye_value(eye_color):
+    # Verificación de color de ojos
+    def eye_value(eye_color, *unused):
         values = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
 
         if eye_color in values:
@@ -148,23 +153,43 @@ def is_valid_value(passport):
         else:
             return False
         
-    def id_value(passport_id):
+    # Verificación de id
+    def id_value(passport_id, *unused):
+        if len(passport_id) != 9:
+            return False
         return passport_id.isnumeric()
     
-    def cid_value(country_id):
+    # Verificación de id del país
+    def cid_value(country_id, *unused):
         return True
 
-   # Definimos el diccionario con los casos
-   dict = {
-        'byr' : [year_value, 1920, 2002],
-        'iyr' : [year_value, 2010, 2020],
-        'eyr' : [year_value, 2020, 2030],
-        'hgt' : [height_value],
-        'hcl' : [hair_value],
-        'ecl' : [eye_value],
-        'pid' : [id_value],
-        'cid' : [cid_value]
-        }
+
+    def switch_casos(argumento):
+        # Definimos el diccionario con los casos
+        func_dict = {
+             'byr' : [year_value, 1920, 2002],
+             'iyr' : [year_value, 2010, 2020],
+             'eyr' : [year_value, 2020, 2030],
+             'hgt' : [height_value],
+             'hcl' : [hair_value],
+             'ecl' : [eye_value],
+             'pid' : [id_value],
+             'cid' : [cid_value]
+             }
+        
+        # Obtengo la función del diccionario
+        func_list = func_dict.get(argumento, lambda: "Invalid attribute")
+        
+        return func_list
+
+    # Leo los atributos del pasaporte recibido
+    for atributo in passport:
+        func_list = switch_casos(atributo)
+        
+        if func_list[0](passport[atributo], *func_list[1:]) is False:
+            return False
+
+    return True
 
 
 def main():
@@ -178,9 +203,15 @@ def main():
     # uno si cumple con los criterios
     
     valid = 0
+    first_passport_filter = []
 
     for passport in passport_list:
-        valid = valid + is_valid_passport(passport)
+        # Primer filtro, si contiene todos los atributos mínimos
+        result = is_valid_passport(passport)
+        if result is True:
+            # Segundo filtro, si los valores de dichos atributos cumple
+            # con las reglas
+            valid = valid + is_valid_value(passport)
 
     print("Los pasaportes validos en la lista son {}".format(valid))
 
