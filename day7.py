@@ -12,7 +12,12 @@ def bag_rule(line_rule):
     diccionario compuesto por los sacos que pueden ir dentro del
     principal y su cantidad.
     '''
-    line = line_rule.split('bags')
+    try:
+        line = line_rule.split('bags')
+        line = line_rule.split('bag')
+    except:
+        pass
+
     line.pop(-1)
 
     # Obtenemos la key principal, el nombre del saco que contiene los otros
@@ -53,31 +58,34 @@ def rule_dict(file):
 # Como variable global para el scrip obtenemos el diccionario de las reglas
 file = open('additional/input_d7', 'r')
 rules_dict = rule_dict(file)
+already_explored = []
 
-
-def bag_contains(bag):
+def find_bag(first_bag):
     '''
-    Como argumento usa un nombre valido de saco y obtiene
-    todos los distintos sacos que pueden ser almacenados diresta he indirectamente
-    en el.
+    Encuentra directamente los sacos que pueden contener shiny gold para
+    luego explorar hacia afuera las otras opciones
     '''
-    
-    final_list = []
+    results = first_bag
 
-    
+    for bag in results:
+        if bag in already_explored:
+            continue
+        else:
+            already_explored.append(bag)
 
-    
+        iteration = [key for key in rules_dict if bag in rules_dict[key]]
+        results = list(set(results + iteration))
 
-
-
-
-
-
-
+    if set(already_explored) == set(results):
+        print('Se exploraron todas las opciones')
+        return results
+    return find_bag(list(set(results))) 
 
 def main():
-    return True
 
+    total = find_bag(['shiny gold'])
+    counter = len(total) - 1
+    print('Hay un total de {} sacos que pueden contener shiny god'.format(counter))
 
 if __name__ == '__main__':
     main()
