@@ -58,6 +58,10 @@ def rule_dict(file):
 # Como variable global para el scrip obtenemos el diccionario de las reglas
 file = open('additional/input_d7', 'r')
 rules_dict = rule_dict(file)
+
+# Metodo iterativo, no es muy bonito pero es lo que me resolvió el problema
+# already_explored es una lista de los bags ya explorados. Cuando esta sea
+# igual a la lista de resultados entonces se habrá encontrado la respuesta
 already_explored = []
 
 def find_bag(first_bag):
@@ -81,11 +85,61 @@ def find_bag(first_bag):
         return results
     return find_bag(list(set(results))) 
 
+# Ok en este punto debo empezar a ordenar y comentar mejor el còdigo
+# fue algo màs complicado y eso se nota en las siguientes lineas
+# en resumen la función total_bags devuelve un diccionario con todos
+# los bags contenidos en el aplicando el multiplicador de los bags
+# iniciales.
+
+# LA función recursive_total toma  esta función y la aplica recursivamente
+# en cada ciclo suma el total de bags y este valor lo suma a un contador.
+# Al llegar a un punto en que no se pueden alamacenar màs bags devuelve el
+# contador. 
+
+# Lo polémico de esto es que tuve que usar una variable global como contador
+# seguramente existen mejores soluciones pero que más da me dio.
+
+
+def total_bags(bags_dict):
+
+    result = {}
+    for bag in bags_dict:
+        first_dict = rules_dict[bag]
+        for bag_color in first_dict:
+            if bag_color == 'no other':
+                continue
+            if bag_color in result:
+                result[bag_color] = result[bag_color] + int(bags_dict[bag]) * int(first_dict[bag_color])
+            else:
+                result[bag_color] = int(bags_dict[bag]) * int(first_dict[bag_color])
+
+    return result 
+    
+counter = 0
+def recursive_total(bags_first):
+    result = total_bags(bags_first)
+    print(result)
+    print(sum(result.values()))
+    global counter
+    if len(result) == 0:
+        return counter
+    else:
+        counter  += sum(result.values())
+        return recursive_total(result)
+
 def main():
 
     total = find_bag(['shiny gold'])
     counter = len(total) - 1
     print('Hay un total de {} sacos que pueden contener shiny god'.format(counter))
+
+    first_iter = total_bags({'shiny gold'})
+    counter = 0
+
+    for bags in firs_iter:
+        result = total_bags(first_iter)
+        counter += sum(result.values())
+
 
 if __name__ == '__main__':
     main()
