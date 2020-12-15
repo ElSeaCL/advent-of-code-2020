@@ -21,8 +21,6 @@ def instruction_set(file):
 
     return instructions
 
-
-
 def single_value_instruction(file):
     # Variables iniciales
     accumulator = 0
@@ -39,7 +37,7 @@ def single_value_instruction(file):
         instruction_run.append(position)
 
         # Se ejecuta la instrucción        
-        print('Se ejecuta la instrucción position {} que corresponde a:\nCódigo: {}\nNúmero: {}\n'.format(position, present_inst[0], present_inst[1]))
+        #print('Se ejecuta la instrucción position {} que corresponde a:\nCódigo: {}\nNúmero: {}\n'.format(position, present_inst[0], present_inst[1]))
 
         if present_inst[0] == 'acc':
             accumulator += present_inst[1]
@@ -51,6 +49,7 @@ def single_value_instruction(file):
 
         if position == 617:
             position = 0
+            print('El acumulador al momento de repetirse la instrucción es {}'.format(accumulator))
             return 0
 
     print('El acumulador al momento de repetirse la instrucción es {}'.format(accumulator))
@@ -66,14 +65,26 @@ def main():
     last_inst = 616
 
     last_value = 1
+    position = 0
 
     while last_value != 0:
-        copy_instructions = instructions[:]
-        for inst in copy_instructions:
-            if 
-
-
+        copy_instructions = instructions.copy()
     
+        # Ojo, las listas internas deben ser copiadas apropiadamente, sino es asì solo
+        # se estara modificando la referencia por lo que terminaría afectando la lista
+        # original.
+        if copy_instructions[position][0] == 'jmp':
+            copy_instructions[position] = copy_instructions[position].copy()
+            copy_instructions[position][0] = 'nop'
+        elif copy_instructions[position][0] == 'nop':
+            copy_instructions[position] = copy_instructions[position].copy()
+            copy_instructions[position][0] = 'jmp'
+        else:
+            position += 1
+            continue
+
+        last_value = single_value_instruction(copy_instructions)
+        position += 1
 
 
 if __name__ == "__main__":
