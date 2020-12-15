@@ -118,8 +118,6 @@ def total_bags(bags_dict):
 counter = 0
 def recursive_total(bags_first):
     result = total_bags(bags_first)
-    print(result)
-    print(sum(result.values()))
     global counter
     if len(result) == 0:
         return counter
