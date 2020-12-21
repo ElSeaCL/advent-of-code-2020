@@ -10,6 +10,9 @@ cuenta la cantidad total de respuestas únicas, mientras que el segundo
 cuanta la cantidad total de respuestas repetidas.
 '''
 OUTLET_JOLT = 0
+ADAPTER_FAKE = list(range(1,51))
+ADAPTER_EX = [16, 10, 15, 5, 1, 11, 7,19, 6, 12, 4]
+
 
 def adapter_list(file):
     adap_list = []
@@ -180,7 +183,7 @@ def combination_gen(lista, n):
 
             
     
-def combinarion_gen_final(lista, n):
+def combination_gen_final(lista, n):
     # Toma una lista de adaptadores y devuelve un generador 
     # que entrega todas las lista posbiles que contengan n 
     # elementos
@@ -214,6 +217,7 @@ def combinarion_gen_final(lista, n):
     selection_list.sort()
 
     def list_generator(lista, index):
+        print('inicio de iterador')
         # Toma una lista y la va modificando a partir del indice indicado
         # reemplazando sus valores por los de la lista principal (selection_list)
         
@@ -226,15 +230,20 @@ def combinarion_gen_final(lista, n):
 
             # Se ven los valores de la lista original (las opciones de reemplazo)
             # y si cumplen con unas reglas básicas se reemplazan
+            
             for option in selection_list:
+                print('se ve la opción {} en el indice {}'.format(option, index))
                 # Diferencia hipotetica de terminos consecutivos
                 opt_dif = option - lista[index - 1]
 
+                if index == 0 and option not in range(1,4):
+                    index += 1
+                    break
                 # Si la opción se encuentra en la lista se continua al siguiente
                 if option in lista[:index]:
                     continue
                 # Si la opción es menor al termino por reemplazar se continúa
-                elif option < lista[index]:
+                elif option <= lista[index]:
                     continue
                 # Si la diferencia hipotetica es mayor a 3 se continua
                 elif opt_dif > 3:
@@ -245,14 +254,14 @@ def combinarion_gen_final(lista, n):
                 # siguiente
                 else:
                     lista[index] = option
+                    print(lista)
                     yield list_generator(lista, index + 1)
 
         # Una vez que se avanzo por todos los indices la única opción es devolver
         # la lista resultante
+        print(lista)
         yield lista
 
-    #Comenzamos a crear las posibles listas a partir de la lista menor
-    ans_list = selection_list[:n]
     
     # Se crea una lista de indices en orden inverso para avanzar por la lista
     # a modificar
@@ -263,19 +272,18 @@ def combinarion_gen_final(lista, n):
     # nexto sobre el generador. Estas listas se evaluan para ver si cumplen
     # con todas la reglas, en caso de ser cierto se devuelve la lista
     for x in position_index:
+        print('inicio iteración en indice {}'.format(x))
+        #Comenzamos a crear las posibles listas a partir de la lista menor
+        ans_list = selection_list[:n]
+        print('Se comienza con la lista\n')
+        print(ans_list)
+
         options_gen = list_generator(ans_list, x)
         option_list = next(options_gen)
 
         if check_list(option_list):
+            print('opciòn valida')
             yield option_list
-
-
-
-
-
-
-
-
 
 
 
