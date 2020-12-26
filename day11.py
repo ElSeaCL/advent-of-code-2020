@@ -40,24 +40,54 @@ def cicle_seat(seats, len_lines):
     def index_from_coord(coord):
         return 97 * coord[1] + coord[0]
 
-    def vecindad(index):
+    def vecindad_part1(index):
         # Genera los indices de la vecindad tomando en cuenta los lìmites del string y aplica estos indices al string
         # generando así una lista con la vecindad para el indice especifico dado.
+        # Esto segun las reglas de la parte 1 del problema
         
         index = coord(index)
         neighbor_factor = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
         
-        return map(lambda indice: list_seat[indice], map(index_from_coord, [x for x in map(lambda factor: (index[0] + factor[0], index[1] + factor[1]), neighbor_factor) if x[0] >= 0 and x[0] <= 96 and x[1] >= 0 and x[1] <= 92]))
+        return map(lambda indice: list_seat[indice], map(index_from_coord,\
+                [x for x in map(lambda factor: (index[0] + factor[0], index[1] \
+                + factor[1]), neighbor_factor) if x[0] >= 0 and x[0] <= 96 and x[1] >= 0 and x[1] <= 92]))
+
+    def vecindad_part2(index):
+         # Genera los indices de la vecindad tomando en cuenta los lìmites del string y aplica estos indices al string
+         # generando así una lista con la vecindad para el indice especifico dado.
+         # Esto segun las reglas de la parte 2 del problema
+    
+        index = coord(index)          
+        neighbor_factor = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+
+        n_neighbor = []
+
+        for factor in neighbor_factor:
+            n_index = [0,0]
+            n_index[0], n_index[1] = index[0] + factor[0], index[1] + factor[1]
+            while n_index[0] >= 0 and n_index[0] <= 96 and n_index[1] >= 0 and n_index[1] <= 92:
+               n_seat = index_from_coord(tuple(n_index))
+               n_seat = list_seat[n_seat]
+               if n_seat == 'L' or n_seat == '#':
+                   n_neighbor.append(n_seat)
+                   break
+               else:
+                   n_index[0], n_index[1] = n_index[0] + factor[0], n_index[1] + factor[1]
+
+               if n_index[0] < 0 or n_index[0] > 96 or n_index[1] < 0 or n_index[1] > 92:
+                   n_neighbor.append('.')
+
+        return n_neighbor
 
     def rules(seat, vecindad):
-        # Toma la vecindad y retorna el cambio a realizar
+        # Toma la vecindad y retorna el cambio a realizar segun lass reglas de la parte 1
         
         vec = list(vecindad)
         ocupados = vec.count('#')
         
         if seat == 'L' and ocupados == 0:
             return '#'
-        elif seat == '#' and ocupados >= 4:
+        elif seat == '#' and ocupados >= 5:
             return 'L'
         else:
             return seat
@@ -68,7 +98,7 @@ def cicle_seat(seats, len_lines):
         if seats[i] == '.':
             new_seats = new_seats + '.'
         else:
-            vec = vecindad(i)
+            vec = vecindad_part2(i)
             new_seats = new_seats + rules(seats[i], vec)
 
     return new_seats
