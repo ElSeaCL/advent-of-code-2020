@@ -10,6 +10,8 @@ de un ferry, determinar la cantidad de asientos acupados al momento en que no
 hayan más cambios.
 '''
 
+from itertools import permutations
+
 def readfile(file):
     # Devuelve una lista con las direcciones de cada uno de los
     # numeros y un zip de los pares mask, number
@@ -35,7 +37,7 @@ def readfile(file):
     return address_list, mask_zip
 
 
-def mask_apply(mask, number):
+def mask_to_num(mask, number, tipo='numero'):
     # Toma la mascara, se la aplica al numero y devuelve el numero nuevo
     
     # Primero se transforma en binario string y se retira los dos primeros char
@@ -47,14 +49,29 @@ def mask_apply(mask, number):
     number = relleno + number
 
     n_num = ''
-    for x in zip(mask, number):
-        if x[0] == 'X':
-            char = x[1]
-        else:
-            char = x[0]
-        n_num = n_num + char
+    if tipe == 'number':
+        for x in zip(mask, number):
+            if x[0] == 'X':
+                char = x[1]
+            else:
+                char = x[0]
+            n_num = n_num + char
+    else:
+        for x in zip(mask, number):
+            if x[0] == 'X':
+                char = 'X'
+            elif x[0] == '1':
+                char = '1'
+            else:
+                char = x[1]
 
     return n_num
+
+def get_possible_mem(mem_num):
+    # Utilizare permutation donde cada X sera reemplazada por un [0, 1] obteniendo asílas posibles
+    # opciones como un generador.
+
+    num_expanded = [[0,1] for x in mem_num if x == 'X']
 
 
 def main():
@@ -64,7 +81,7 @@ def main():
     index = 0
 
     for pair in mask_num:
-        n_num = mask_apply(*pair)
+        n_num = mask_to_num(*pair)
         n_num = '0b' + n_num
         n_num = int(n_num, 2)
         result_dict[address[index]] = n_num
